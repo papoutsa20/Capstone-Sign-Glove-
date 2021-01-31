@@ -1,0 +1,78 @@
+import tensorflow as tf
+import numpy as np
+
+from sklearn.utils import shuffle
+
+
+mnist = tf.keras.datasets.mnist
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
+
+class_names = ['A', 'B', 'C', 'D', 'F']
+
+#Import data from folders
+all_grades = []
+all_labels = []
+
+for letter in range(len(class_names)):
+    with open(f'train/data/dummy_data/{class_names[letter]}.csv', newline='') as f:
+        all_grades += f.read().split('\r\n')
+        base_label = [letter]
+        #base_label[letter] = 1
+        all_labels += [base_label] * 50
+
+all_grades = np.array(all_grades, dtype=float)
+all_labels = np.array(all_labels, dtype=int)
+
+#print(all_labels)
+
+#Preprocess Data
+all_grades = all_grades / 100.0
+
+cut_off = int(all_grades.shape[0]*.80)
+
+all_grades, all_labels = shuffle(all_grades, all_labels)
+
+train_grades = all_grades[:cut_off]
+train_labels = all_labels[:cut_off]
+
+test_grades = all_grades[cut_off:]
+test_labels = all_labels[cut_off:]
+
+print(all_labels.shape)
+print(all_grades.shape)
+
+
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(10, activation='relu', input_shape=(1,)),
+    tf.keras.layers.Dense(8, activation='relu'),
+    tf.keras.layers.Dense(5, activation='softmax')
+])
+
+model.compile(optimizer='adam',
+        loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+        metrics=['accuracy'])
+
+#print(train_grades)
+#print(train_labels)
+#
+#print(test_grades)
+#print(test_labels)
+
+model.fit(train_grades, train_labels, epochs=1000)
+
+model.evaluate(test_grades, test_labels, verbose=2)
+
+while True:
+    val = float(input("Enter a grade"))
+    out = model.predict([val])
+    max_index = np.argmax(out) 
+    #print("That is {0}, I am {1} sure".format(class_names[max_index], out[max_index]))
+    str = ''
+    for i in range(5):
+        str += class_names[i]
+        str += ' '
+        str += "{:10.4f}".format(float(out[0][i]))
+        str += '\n'
+    print(str)
+    
+
