@@ -8,8 +8,9 @@ mnist = tf.keras.datasets.mnist
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
 class_names = ['A', 'B', 'C', 'D', 'F']
-
+#######
 #Import data from folders
+#######
 all_grades = []
 all_labels = []
 
@@ -22,6 +23,9 @@ for letter in range(len(class_names)):
 
 all_grades = np.array(all_grades, dtype=float)
 all_labels = np.array(all_labels, dtype=int)
+########
+
+
 
 #print(all_labels)
 
@@ -43,9 +47,9 @@ print(all_grades.shape)
 
 
 model = tf.keras.Sequential([
-    tf.keras.layers.Dense(10, activation='relu', input_shape=(1,)),
+    tf.keras.layers.Dense(10, activation='relu', input_shape=(8,)),
     tf.keras.layers.Dense(8, activation='relu'),
-    tf.keras.layers.Dense(5, activation='softmax')
+    tf.keras.layers.Dense(26, activation='softmax')
 ])
 
 model.compile(optimizer='adam',
@@ -58,7 +62,7 @@ model.compile(optimizer='adam',
 #print(test_grades)
 #print(test_labels)
 
-model.fit(train_grades, train_labels, epochs=1000)
+model.fit(train_grades, train_labels, epochs=2500)
 
 model.evaluate(test_grades, test_labels, verbose=2)
 
