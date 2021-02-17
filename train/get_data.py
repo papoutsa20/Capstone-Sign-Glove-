@@ -1,17 +1,33 @@
 from tkinter import ttk
 import tkinter as tk
 import random
+import os
+import serial
+import subprocess
 
 def run_collection(name, num_times, letters_to_sign):
-    print(name)
-    print(num_times)
-    print(letters_to_sign)
     random_list = []
+    ser = serial.Serial('COM4', 9600, timeout=1)
     for letter in letters_to_sign:
-        random_list += [letter]*(num_times-1)
+        random_list += [letter]*(num_times)
+        data_path = os.path.join(os.path.dirname(__file__), 'data', '{}'.format(letter), '{}.csv'.format(name.replace(' ','_')))
+        # if dir doesn't exist, create it
+        if not os.path.exists(data_path):
+            os.makedirs(data_path)
 
     random.shuffle(random_list)
-    print(random_list)
+    # start the collection    
+    for letter in random_list:
+        print(os.path.join(os.path.dirname(__file__), 'data_collection_img', '{}.jpg'.format(letter)))
+        p = subprocess.Popen(['display',os.path.join(os.path.dirname(__file__), 'data_collection_img', '{}.jpg'.format(letter))])
+        # wait for enter to be pressed
+        input()
+        continue
+        data = ser.readline()
+        p.kill()
+        with open(os.path.join(os.path.dirname(__file__), 'data', '{}'.format(letter), '{}.csv'.format(name.replace(' ','_'))), 'w+') as f:
+            f.write(data + '\n') 
+
 def init_collection():
     # functions to select and deselect check boxes
     def select_all():
@@ -55,7 +71,7 @@ def init_collection():
     # number of times input 
     label = ttk.Label(window, text='# of repeats:')
     label.grid(column=0,row=30, sticky='W')
-    num_times = tk.IntVar()
+    num_times = tk.IntVar(value=1)
     num_entered = ttk.Entry(window, textvariable = num_times)
     num_entered.grid(column = 1, row = 30, pady=(10,10), padx=(5,5), sticky='W')
     # button to start data collection
