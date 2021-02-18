@@ -6,23 +6,28 @@ import serial
 import subprocess
 
 def run_collection(name, num_times, letters_to_sign):
-    random_list = []
     ser = serial.Serial('COM4', 9600, timeout=1)
-    for letter in letters_to_sign:
-        random_list += [letter]*(num_times)
-        data_path = os.path.join(os.path.dirname(__file__), 'data', '{}'.format(letter), '{}.csv'.format(name.replace(' ','_')))
+    size = len(letters_to_sign)
+    
+    # add additional letters to list if repeats is greater than 1
+    for letter_index in range(size):
+        letters_to_sign += [letters_to_sign[letter_index]]*(num_times-1)
+        data_path = os.path.join(os.path.dirname(__file__), 'data', '{}'.format(letters_to_sign[letter_index]), '{}.csv'.format(name.replace(' ','_')))
+        
         # if dir doesn't exist, create it
         if not os.path.exists(data_path):
             os.makedirs(data_path)
 
-    random.shuffle(random_list)
+    random.shuffle(letters_to_sign)
     # start the collection    
-    for letter in random_list:
-        print(os.path.join(os.path.dirname(__file__), 'data_collection_img', '{}.jpg'.format(letter)))
+    for letter in letters_to_sign:
+        #displaying image to user using 'display' linux call, may need to change for windows
         p = subprocess.Popen(['display',os.path.join(os.path.dirname(__file__), 'data_collection_img', '{}.jpg'.format(letter))])
+        
         # wait for enter to be pressed
         input()
-        continue
+
+        # store data from ardunio
         data = ser.readline()
         p.kill()
         with open(os.path.join(os.path.dirname(__file__), 'data', '{}'.format(letter), '{}.csv'.format(name.replace(' ','_'))), 'w+') as f:
