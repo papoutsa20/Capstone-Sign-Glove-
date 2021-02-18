@@ -2,14 +2,17 @@ from tkinter import ttk
 import tkinter as tk
 import random
 import os
-import serial
+#import serial
 import subprocess
 
 def run_collection(name, num_times, letters_to_sign):
     ser = serial.Serial('COM4', 9600, timeout=1)
     size = len(letters_to_sign)
     
-    # add additional letters to list if repeats is greater than 1
+    # change this variable if display doesn't work on windows
+    img_opening_program = 'display'    
+ 
+ # add additional letters to list if repeats is greater than 1
     for letter_index in range(size):
         letters_to_sign += [letters_to_sign[letter_index]]*(num_times-1)
         data_path = os.path.join(os.path.dirname(__file__), 'data', '{}'.format(letters_to_sign[letter_index]), '{}.csv'.format(name.replace(' ','_')))
@@ -22,7 +25,7 @@ def run_collection(name, num_times, letters_to_sign):
     # start the collection    
     for letter in letters_to_sign:
         #displaying image to user using 'display' linux call, may need to change for windows
-        p = subprocess.Popen(['display',os.path.join(os.path.dirname(__file__), 'data_collection_img', '{}.jpg'.format(letter))])
+        p = subprocess.Popen([img_opening_program,os.path.join(os.path.dirname(__file__), 'data_collection_img', '{}.jpg'.format(letter))])
         
         # wait for enter to be pressed
         input()
@@ -42,10 +45,16 @@ def init_collection():
     def deselect_all():
         for i in letters_to_sign:
             i.set(0)
+    def start_collecting_func():
+        nonlocal start_collecting
+        start_collecting = True
+        window.destroy()
+
 
     letters = 'ABCDEFGHIIJKLMNOPQRSTUVWXYZ'
     letters_to_sign = []
-
+    start_collecting = False
+    
     # build window
     window = tk.Tk()
     window.title('Data collection')
@@ -80,12 +89,16 @@ def init_collection():
     num_entered = ttk.Entry(window, textvariable = num_times)
     num_entered.grid(column = 1, row = 30, pady=(10,10), padx=(5,5), sticky='W')
     # button to start data collection
-    button = ttk.Button(window, text = "Start!", command = window.destroy)
+    button = ttk.Button(window, text = "Start!", command = start_collecting_func)
     button.grid(column= 0, row = 31, pady=(20,20))
      
     window.mainloop()
-    return name.get(), num_times.get(), [letters[i] for i,x in enumerate(letters_to_sign) if x.get()]
+    if start_collecting:
+        return name.get(), num_times.get(), [letters[i] for i,x in enumerate(letters_to_sign) if x.get()]
+    else:
+        return None, None, None
 
 if __name__ == '__main__':
     name, num_times, letters_to_sign = init_collection()
-    run_collection(name, num_times, letters_to_sign)
+    if name and num_times and letters_to_sign:
+        run_collection(name, num_times, letters_to_sign)
