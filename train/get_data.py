@@ -2,8 +2,10 @@ from tkinter import ttk
 import tkinter as tk
 import random
 import os
-#import serial
+import serial
 import subprocess
+import keyboard
+import time
 
 def run_collection(name, num_times, letters_to_sign):
     ser = serial.Serial('COM4', 9600, timeout=1)
@@ -12,7 +14,7 @@ def run_collection(name, num_times, letters_to_sign):
     # change this variable if display doesn't work on windows
     img_opening_program = 'display'    
  
- # add additional letters to list if repeats is greater than 1
+    # add additional letters to list if repeats is greater than 1
     for letter_index in range(size):
         letters_to_sign += [letters_to_sign[letter_index]]*(num_times-1)
         data_path = os.path.join(os.path.dirname(__file__), 'data', '{}'.format(letters_to_sign[letter_index]), '{}.csv'.format(name.replace(' ','_')))
@@ -22,18 +24,25 @@ def run_collection(name, num_times, letters_to_sign):
             os.makedirs(data_path)
 
     random.shuffle(letters_to_sign)
+    
+    print(letters_to_sign)
     # start the collection    
     for letter in letters_to_sign:
         #displaying image to user using 'display' linux call, may need to change for windows
         p = subprocess.Popen([img_opening_program,os.path.join(os.path.dirname(__file__), 'data_collection_img', '{}.jpg'.format(letter))])
         
         # wait for enter to be pressed
-        input()
-
+        while True:
+            if keyboard.is_pressed('space'):
+                break
+            
         # store data from ardunio
         data = ser.readline()
+        time.sleep(.1)
         p.kill()
-        with open(os.path.join(os.path.dirname(__file__), 'data', '{}'.format(letter), '{}.csv'.format(name.replace(' ','_'))), 'w+') as f:
+        print('here')
+        continue 
+        with open(os.path.join(os.path.dirname(__file__), 'data', '{}'.format(letter), '{}.csv'.format(name.replace(' ','_'))), 'w+', '0755') as f:
             f.write(data + '\n') 
 
 def init_collection():
