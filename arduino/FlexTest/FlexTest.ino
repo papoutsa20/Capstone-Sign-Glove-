@@ -78,8 +78,9 @@ void loop() {
     Serial.println(" ");
   }
   else {
-    Serial.printf("%d, %d, %d, %d, %d, %.10f, %.10f, %.10f", ADCthumb, ADCindex, ADCmiddle, ADCring, ADCpinky, ax, ay, az);
+    Serial.printf("%d,%d,%d,%d,%d,%.10f,%.10f,%.10f", ADCthumb, ADCindex, ADCmiddle, ADCring, ADCpinky, ax, ay, az);
+    Serial.printf("\n");
   }
 
-  delay(10);
+  delay(100);
 }

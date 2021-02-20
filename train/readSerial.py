@@ -1,4 +1,4 @@
 import serial
-ser = serial.Serial('COM4', 9600, timeout=1)
+ser = serial.Serial('/dev/cu.usbmodem1432301', 9600, timeout=1)
 while(True):
     print(ser.readline())
