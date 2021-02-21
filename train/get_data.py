@@ -7,6 +7,7 @@ import subprocess
 import keyboard
 import time
 
+    
 def run_collection(name, num_times, letters_to_sign):
     port_name = '/dev/cu.usbmodem1432301'#changed by Spencer for arduino port
     ser = serial.Serial(port_name, 9600, timeout=1)
@@ -39,9 +40,9 @@ def run_collection(name, num_times, letters_to_sign):
                 break
 
         # store data from ardunio
-        ser.reset_output_buffer()
         try:
-            data = ser.readline()
+            # read all lines in buffer, make list based on \n, take last entry
+            data = ser.read(ser.outWaiting()).split('\n')[-2]
         except ArduinoConnectError:
             print("Arduino fucked up")
 
