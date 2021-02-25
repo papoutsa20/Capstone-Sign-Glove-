@@ -6,8 +6,9 @@ import serial
 import subprocess
 import keyboard
 import time
+import sys
 
-    
+
 def run_collection(name, num_times, letters_to_sign):
     port_name = '/dev/cu.usbmodem1432301'#changed by Spencer for arduino port
     ser = serial.Serial(port_name, 9600, timeout=1)
@@ -40,11 +41,13 @@ def run_collection(name, num_times, letters_to_sign):
                 break
 
         # store data from ardunio
-        try:
-            # read all lines in buffer, make list based on \n, take last entry
-            data = ser.read(ser.outWaiting()).split('\n')[-2]
-        except ArduinoConnectError:
-            print("Arduino fucked up")
+        ser.reset_input_buffer()
+        time.sleep(1)
+        preData = ser.read(ser.in_waiting)
+        print(preData)
+        # read all lines in buffer, make list based on \n, take last entry
+        data = preData.decode("utf-8").split('\n')[-2]
+        print(data)
 
         while(keyboard.is_pressed('space')):
              pass
@@ -56,7 +59,7 @@ def run_collection(name, num_times, letters_to_sign):
         print(count)
 
         with open(os.path.join(os.path.dirname(__file__), 'data', '{}'.format(letter), '{}.csv'.format(name.replace(' ','_'))), 'a', 777) as f:
-            f.write(data.decode("utf-8"))
+            f.write(data +"\n")
 
 def init_collection():
     # functions to select and deselect check boxes

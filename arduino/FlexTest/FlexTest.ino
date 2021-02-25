@@ -82,5 +82,5 @@ void loop() {
     Serial.printf("\n");
   }
 
-  delay(100);
+  delay(20);
 }
