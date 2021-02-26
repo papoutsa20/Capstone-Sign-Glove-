@@ -12,6 +12,7 @@ import sys
 # continually read from ardunio
 def read_line():
     global current_line
+    ser.reset_input_buffer()    
     while True:
         current_line = ser.readline()
         time.sleep(.20)
