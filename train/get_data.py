@@ -8,10 +8,14 @@ import keyboard
 import time
 import sys
 
+# continually read from ardunio
+def read_line():
+    global current_line
+    while True:
+        current_line = ser.readline()
+        time.sleep(.20)
 
 def run_collection(name, num_times, letters_to_sign):
-    port_name = '/dev/cu.usbmodem1432301'#changed by Spencer for arduino port
-    ser = serial.Serial(port_name, 9600, timeout=1)
     size = len(letters_to_sign)
 
     # change this variable if display doesn't work on windows
@@ -41,12 +45,13 @@ def run_collection(name, num_times, letters_to_sign):
                 break
 
         # store data from ardunio
-        ser.reset_input_buffer()
-        time.sleep(1)
-        preData = ser.read(ser.in_waiting)
-        print(preData)
+        #ser.reset_input_buffer()
+        #time.sleep(1)
+        #preData = ser.read(ser.in_waiting)
+        #print(preData)
         # read all lines in buffer, make list based on \n, take last entry
-        data = preData.decode("utf-8").split('\n')[-2]
+        #data = preData.decode("utf-8").split('\n')[-2]
+        data = current_line.decode('utf-8')
         print(data)
 
         while(keyboard.is_pressed('space')):
@@ -124,6 +129,14 @@ def init_collection():
         return None, None, None
 
 if __name__ == '__main__':
+    port_name = '/dev/cu.usbmodem1432301'#changed by Spencer for arduino port
+    ser = serial.Serial(port_name, 9600, timeout=1)
+    current_line = None
+
+    # starting reading thread
+    t = threading.Thread(target=read_line, daemon=True)
+    t.start()
+
     name, num_times, letters_to_sign = init_collection()
     if name and num_times and letters_to_sign:
         run_collection(name, num_times, letters_to_sign)
