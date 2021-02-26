@@ -1,6 +1,7 @@
 from tkinter import ttk
 import tkinter as tk
 import random
+import threading
 import os
 import serial
 import subprocess
