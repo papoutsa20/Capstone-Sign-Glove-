@@ -8,14 +8,20 @@ import subprocess
 import keyboard
 import time
 import sys
+from multiprocessing import Process
 
 # continually read from ardunio
-def read_line():
+def read_line( ):
+    port_name = '/dev/cu.usbmodem1432301'#changed by Spencer for arduino port
+    ser = serial.Serial(port_name, 9600, timeout=1)
     global current_line
-    ser.reset_input_buffer()    
+    global pid
+    pid = os.getpid()
+    ser.reset_input_buffer()
     while True:
         current_line = ser.readline()
-        time.sleep(.20)
+        print(current_line)
+        #time.sleep(.10)
 
 def run_collection(name, num_times, letters_to_sign):
     size = len(letters_to_sign)
@@ -44,6 +50,7 @@ def run_collection(name, num_times, letters_to_sign):
         # wait for enter to be pressed
         while True:
             if keyboard.is_pressed('space'):
+                time.sleep(.1)
                 break
 
         # store data from ardunio
@@ -57,13 +64,14 @@ def run_collection(name, num_times, letters_to_sign):
         print(data)
 
         while(keyboard.is_pressed('space')):
-             pass
+            time.sleep(.1)
+            pass
         p.kill()
         #os.killpg(os.getpgid(p.pid), signal.SIGTERM)  # Send the signal to all the process groups
         #p2 = subprocess.Popen(["pkill", "-P", '{}'.format(p.pid)])
         #os.kill(p.pid, 9)
         count+=1
-        print(count)
+        print(str(count)+ " " + letter)
 
         with open(os.path.join(os.path.dirname(__file__), 'data', '{}'.format(letter), '{}.csv'.format(name.replace(' ','_'))), 'a', 777) as f:
             f.write(data +"\n")
@@ -131,14 +139,15 @@ def init_collection():
         return None, None, None
 
 if __name__ == '__main__':
-    port_name = '/dev/cu.usbmodem1432301'#changed by Spencer for arduino port
-    ser = serial.Serial(port_name, 9600, timeout=1)
+
     current_line = None
+    pid = None
 
     # starting reading thread
-    t = threading.Thread(target=read_line, daemon=True)
+    t = Process(target=read_line)
     t.start()
 
     name, num_times, letters_to_sign = init_collection()
     if name and num_times and letters_to_sign:
         run_collection(name, num_times, letters_to_sign)
+        os.kill(pid, 9)
