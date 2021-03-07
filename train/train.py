@@ -4,35 +4,42 @@ import os
 from sklearn.utils import shuffle
 import predict
 DATA_PATH = os.path.join(os.path.dirname(__file__), 'data')
+#LETTERS = (
+#        'A',
+#        'B',
+#        'C',
+#        'D',
+#        'E',
+#        'F',
+#        'G',
+#        'H',
+#        'I',
+#        'J',
+#        'K',
+#        'L',
+#        'M',
+#        'N',
+#        'O',
+#        'P',
+#        'Q',
+#        'R',
+#        'S',
+#        'T',
+#        'U',
+#        'V',
+#        'W',
+#        'X',
+#        'Y',
+#        'Z'
+#)
+
 LETTERS = (
         'A',
-        'B',
         'C',
-        'D',
-        'E',
-        'F',
         'G',
-        'H',
-        'I',
-        'J',
-        'K',
-        'L',
-        'M',
-        'N',
-        'O',
-        'P',
-        'Q',
-        'R',
-        'S',
-        'T',
-        'U',
         'V',
-        'W',
-        'X',
-        'Y',
-        'Z'
+        'W'
 )
-
 # import data from folders
 # looks for folders by letter in DATA_PATH (ex DATA_PATH/A)
 # returns np arrays of values and labels
@@ -45,7 +52,8 @@ def read_data():
                 if data_file[-4:] == '.csv':
                     with open(os.path.join(DATA_PATH,LETTERS[letter],data_file), 'r') as f:
                         for line in f.readlines():
-                            data.append(line.split(','))
+                            #data.append(line.split(','))
+                            data.append(line.split(',')[:5] + [0,0,0])
                             labels.append(letter)
         except OSError as ex:
             print('ERROR: '+ str(ex))
@@ -84,7 +92,7 @@ if '__main__' == __name__:
     data, labels = read_data() 
     print(data)
     print(labels)
-
+    exit()
     model = create_model()
     train_x, train_y, test_x, test_y = split_train_test(data, labels)
 
