@@ -19,21 +19,25 @@ letters = ['V','W']
 
 
 
-x = np.arange(5)
+x = np.arange(8)
 y = {}
 for letter in letters: 
     with open(os.path.join('./data', letter ,'Jason.csv'), 'r') as f:
-        y[letter] = {0:[],1:[],2:[],3:[],4:[]}
+        y[letter] = {0:[],1:[],2:[],3:[],4:[],5:[],6:[],7:[]}
         for line in f.readlines():
             line = line.split(',')
             for i in range(5):
                 y[letter][i].append(int(line[i])/1023) 
+            for i in range(3):
+                y[letter][5+i].append(float(line[5+i]))
 
 
-for x in range(5):
+for x in range(8):
     for letter in letters: 
         plt.scatter([x]*len(y[letter][x]), y[letter][x], color=colors[letter])
 
+plt.title('Sensor Values Normalized')
+plt.xticks(range(8), ['Thumb','Index','Middle','Ring','Pinky','AccX','AccY','AccZ'])
 plt.show()
 
 
