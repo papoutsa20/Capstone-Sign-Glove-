@@ -15,8 +15,7 @@ colors = {
 }
 
 # letters to graph
-letters = ['V','W']
-
+letters = ['A','C','G']
 
 
 x = np.arange(8)
@@ -34,9 +33,10 @@ for letter in letters:
 
 for x in range(8):
     for letter in letters: 
-        plt.scatter([x]*len(y[letter][x]), y[letter][x], color=colors[letter])
+        plt.scatter([x]*len(y[letter][x]), y[letter][x], color=colors[letter], label=letter if x == 0 else None)
 
 plt.title('Sensor Values Normalized')
+plt.legend()
 plt.xticks(range(8), ['Thumb','Index','Middle','Ring','Pinky','AccX','AccY','AccZ'])
 plt.show()
 
