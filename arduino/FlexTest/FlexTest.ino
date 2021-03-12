@@ -15,8 +15,11 @@ float maxVal = 1.0;
 
 bool debug_flag = false;
 
+float initx, inity, initz = 0;
+
 void setup() {
   // put your setup code here, to run once:
+  delay(2000);
   Serial.begin(9600);
   pinMode(thumbPin, INPUT);
   pinMode(indexPin, INPUT);
@@ -35,6 +38,13 @@ void setup() {
   Serial.println();
   Serial.println("Acceleration in G's");
   Serial.println("X\tY\tZ");
+  
+
+  while (! IMU.accelerationAvailable()) {
+    delay(50);
+    Serial.println("Not ready yet");
+  }
+  IMU.readAcceleration(initx, inity, initz);
 }
 
 void loop() {
@@ -46,6 +56,10 @@ void loop() {
   int ADCpinky = analogRead(pinkyPin);
   if (IMU.accelerationAvailable()) {
     IMU.readAcceleration(ax, ay, az);
+    //to zero out initial value of accelerometer
+    ax = ax-initx;
+    ay = ay-inity;
+    az = az-initz;
   }
   else {
     Serial.print("Gyroscope not available");
