@@ -3,12 +3,12 @@ import time
 import keyboard
 import os
 
-ser = serial.Serial('/dev/cu.usbmodem142201', 9600, timeout=2)
+ser = serial.Serial('/dev/cu.usbmodem14201', 9600, timeout=2)
 
 ser.reset_input_buffer()
 count = 0
-#letters = 'ZOQMDGJPUKFBSY=NRLIEATCHXWV' # = is a neutral hand position
-letters = 'ACGVWACGVWACGVWACGVWACGVW'
+letters = 'ZOQMDGJPUKFBSYNRLIEATCHXWV' # = is a neutral hand position
+#letters = 'ACGVWACGVWACGVWACGVWACGVW'
 results = []
 
 while(count < len(letters)):
@@ -21,7 +21,7 @@ while(count < len(letters)):
         results.append(data)
 
 print(results)
-name = "Jason"
+name = "Spencer"
 for i,letter in enumerate(letters):
     data_path = os.path.join(os.path.dirname(__file__), 'data', '{}'.format(letter))
     if not os.path.exists(data_path):
