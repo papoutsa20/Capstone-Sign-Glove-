@@ -3,16 +3,19 @@ import time
 import keyboard
 import os
 
-ser = serial.Serial('/dev/cu.usbmodem14201', 9600, timeout=2)
+ser = serial.Serial('/dev/ttyACM0', 9600, timeout=2)
 
+
+#ser = serial.Serial('/dev/cu.usbmodem14201', 9600, timeout=2)
 ser.reset_input_buffer()
 count = 0
 letters = 'ZOQMDGJPUKFBSYNRLIEATCHXWV' # = is a neutral hand position
-#letters = 'ACGVWACGVWACGVWACGVWACGVW'
+#letters = 'W'
 results = []
 
 while(count < len(letters)):
     data = ser.readline()
+    print(letters[count])
     print(data)
     #print(ser.in_waiting)
     if keyboard.is_pressed('space'):
@@ -20,8 +23,11 @@ while(count < len(letters)):
         count +=1
         results.append(data)
 
+
+
+
 print(results)
-name = "Spencer"
+name = "Stelios"
 for i,letter in enumerate(letters):
     data_path = os.path.join(os.path.dirname(__file__), 'data', '{}'.format(letter))
     if not os.path.exists(data_path):
