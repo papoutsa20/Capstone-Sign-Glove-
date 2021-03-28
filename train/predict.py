@@ -10,6 +10,8 @@ def predictValues(model):
         inputs = inputStr.strip("{}()[]").split(',')
         inputs = [float(i) for i in inputs]
         inputs = np.array([inputs], dtype=float)
+        inputs[:5] = inputs[:5] / 1023.0
+        inputs[5:] = inputs[5:] / 2.0
         print(inputs)        
         modelGuess = predictValue(inputs, model)
         #print(modelGuess)

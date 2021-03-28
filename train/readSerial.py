@@ -3,7 +3,7 @@ import time
 import keyboard
 import os
 
-ser = serial.Serial('/dev/ttyACM0', 9600, timeout=2)
+ser = serial.Serial('COM4', 9600, timeout=2)
 
 
 #ser = serial.Serial('/dev/cu.usbmodem14201', 9600, timeout=2)
@@ -27,7 +27,7 @@ while(count < len(letters)):
 
 
 print(results)
-name = "Ben"
+name = "Jason"
 for i,letter in enumerate(letters):
     data_path = os.path.join(os.path.dirname(__file__), 'data', '{}'.format(letter))
     if not os.path.exists(data_path):
