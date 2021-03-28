@@ -10,7 +10,7 @@ ser = serial.Serial('/dev/ttyACM0', 9600, timeout=2)
 ser.reset_input_buffer()
 count = 0
 letters = 'ZOQMDGJPUKFBSYNRLIEATCHXWV' # = is a neutral hand position
-#letters = 'W'
+#letters = 'PGHPGHPGHPGHPGHPGHPGHPGHPGHPGH'
 results = []
 
 while(count < len(letters)):
@@ -27,7 +27,7 @@ while(count < len(letters)):
 
 
 print(results)
-name = "Stelios"
+name = "Ben"
 for i,letter in enumerate(letters):
     data_path = os.path.join(os.path.dirname(__file__), 'data', '{}'.format(letter))
     if not os.path.exists(data_path):

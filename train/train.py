@@ -68,9 +68,9 @@ def preprocess_data(data):
 def create_model():
 
     model = tf.keras.Sequential([
-        tf.keras.layers.Dense(10, activation='relu', input_shape=(8,)),
-        tf.keras.layers.Dense(30, activation='relu'),
-        tf.keras.layers.Dense(26, activation='softmax')
+        tf.keras.layers.Dense(8, activation='relu', input_shape=(8,)),
+        tf.keras.layers.Dense(10, activation='relu'),
+        tf.keras.layers.Dense(5, activation='softmax')
     ])
 
     model.compile(optimizer='adam',
@@ -78,7 +78,7 @@ def create_model():
         metrics=['accuracy'])
     return model
 
-def split_train_test(data, labels, percent_train=.80):
+def split_train_test(data, labels, percent_train=.95):
     cut_off = int(data.shape[0]*.80)
     grades, labels = shuffle(data, labels)
     train_x = grades[:cut_off]
@@ -90,13 +90,13 @@ def split_train_test(data, labels, percent_train=.80):
 if '__main__' == __name__:
     print('reading data from {}'.format(DATA_PATH))
     data, labels = read_data() 
+    data = preprocess_data(data)
     print(data)
     print(labels)
-    exit()
     model = create_model()
     train_x, train_y, test_x, test_y = split_train_test(data, labels)
-
-    model.fit(train_x, train_y, epochs=100)
+    
+    model.fit(train_x, train_y, epochs=1000)
 
     model.evaluate(test_x, test_y, verbose=2)
 
