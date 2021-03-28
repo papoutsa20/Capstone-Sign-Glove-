@@ -188,11 +188,6 @@ if '__main__' == __name__:
     #exit()
 
     print(labels)
-<<<<<<< HEAD
-    model = create_model()
-    train_x, train_y, test_x, test_y = split_train_test(data, labels)
-    
-=======
     #exit()
     data = preprocess_data(data, maxes, mins)
     #print(data)
@@ -202,7 +197,6 @@ if '__main__' == __name__:
     model = create_model()
     train_x, train_y, test_x, test_y = split_train_test(data, labels)
 
->>>>>>> 8fcfc1634868eae39fc9055e79fb43a305d2ba38
     model.fit(train_x, train_y, epochs=1000)
 
     model.evaluate(test_x, test_y, verbose=2)
