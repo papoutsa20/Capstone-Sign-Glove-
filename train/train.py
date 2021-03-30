@@ -42,12 +42,15 @@ LETTERS = (
         'C',
         'D',
         'E',
+        'M',
+        'N',
         'F',
         'G',
         'H',
         'I',
         'J',
         'K',
+        '''
         'L',
         'M',
         'N',
@@ -62,7 +65,7 @@ LETTERS = (
         'W',
         'X',
         'Y',
-        'Z'
+        'Z'''
 )
 
 
@@ -73,7 +76,7 @@ LETTERS = (
 def read_data():
     data = []
     labels = []
-    poi = ('Jason.csv')
+    poi = ('Jason2.csv', 'Stelios2.csv', 'Spencer2.csv')
     for letter in range(len(LETTERS)):
         try:
             for data_file in [x for x in os.listdir(os.path.join(DATA_PATH,LETTERS[letter])) if x in poi]:
@@ -193,5 +196,6 @@ if '__main__' == __name__:
     model.fit(train_x, train_y, epochs=1000)
 
     model.evaluate(test_x, test_y, verbose=2)
+    model.save('my_model.h5')
 
     predict.predictValues(model)

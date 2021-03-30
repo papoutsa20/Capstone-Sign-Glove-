@@ -5,24 +5,6 @@ import sys
 import os
 import tensorflow as tf
 
-model_lite_dir = os.path.join(os.path.dirname(__path__), '..', 'arduino_models')
-
-# load model from first argument in command line
-model = tf.keras.models.load_model(sys.args[0])
-
-'''
-Note: I got below code from 
-https://www.digikey.com/en/maker/projects/intro-to-tinyml-part-1-training-a-model-for-arduino-in-tensorflow/8f1fc8c0b83d417ab521c48864d2a8ec
-'''
-
-# convert the model into a tenser flow light model
-converter = tf.lite.TFLiteConverter.from_keras_model(model)
-converter.optimizations = [tf.lite.Optimize.OPTIMIZE_FOR_SIZE]
-tflite_model = converter.convert()
-
-with open(os.path.join(model_lite_dir, '{}.h'.format(os.path.basename(sys.args[:-2]))):
-    hex_to_c_array(tflite_model, os.path.basename(sys.args[:-2]))
-
 # Function: Convert some hex value into an array for C programming
 def hex_to_c_array(hex_data, var_name):
 
@@ -57,6 +39,25 @@ def hex_to_c_array(hex_data, var_name):
   c_str += '#endif //' + var_name.upper() + '_H'
 
   return c_str
+
+model_lite_dir = os.path.join(os.path.dirname(__file__), '..', 'arduino_models')
+
+# load model from first argument in command line
+model = tf.keras.models.load_model(sys.argv[1])
+
+'''
+Note: I got below code from 
+https://www.digikey.com/en/maker/projects/intro-to-tinyml-part-1-training-a-model-for-arduino-in-tensorflow/8f1fc8c0b83d417ab521c48864d2a8ec
+'''
+
+# convert the model into a tenser flow light model
+converter = tf.lite.TFLiteConverter.from_keras_model(model)
+converter.optimizations = [tf.lite.Optimize.OPTIMIZE_FOR_SIZE]
+tflite_model = converter.convert()
+
+with open(os.path.join(model_lite_dir, '{}.h'.format(os.path.basename(sys.argv[1][:-3]))),'w') as f:
+    f.write(hex_to_c_array(tflite_model, os.path.basename(sys.argv[1][:-3])))
+    
 
 
 
