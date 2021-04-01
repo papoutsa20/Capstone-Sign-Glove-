@@ -10,7 +10,7 @@ ser = serial.Serial('COM4', 9600, timeout=2)
 ser.reset_input_buffer()
 count = 0
 amount = 50
-letters = 'K' # = is a neutral hand position
+letters = 'U' # = is a neutral hand position
 letters = letters * amount
 #letters = 'W'
 results = []
@@ -28,7 +28,7 @@ while(count < len(letters)):
 
 
 print(results)
-name = "Spencer2"
+name = "Stelios2"
 for i,letter in enumerate(letters):
     data_path = os.path.join(os.path.dirname(__file__), 'data', '{}'.format(letter))
     if not os.path.exists(data_path):

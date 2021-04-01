@@ -42,15 +42,12 @@ LETTERS = (
         'C',
         'D',
         'E',
-        'M',
-        'N',
         'F',
         'G',
         'H',
         'I',
         'J',
         'K',
-        '''
         'L',
         'M',
         'N',
@@ -61,6 +58,7 @@ LETTERS = (
         'S',
         'T',
         'U',
+        '''
         'V',
         'W',
         'X',
@@ -76,7 +74,7 @@ LETTERS = (
 def read_data():
     data = []
     labels = []
-    poi = ('Jason2.csv', 'Stelios2.csv', 'Spencer2.csv')
+    poi = ('Jason2.csv', 'Spencer2.csv', 'Stelios2.csv')
     for letter in range(len(LETTERS)):
         try:
             for data_file in [x for x in os.listdir(os.path.join(DATA_PATH,LETTERS[letter])) if x in poi]:
