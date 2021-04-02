@@ -9,10 +9,11 @@ ser = serial.Serial('COM4', 9600, timeout=2)
 #ser = serial.Serial('/dev/cu.usbmodem14201', 9600, timeout=2)
 ser.reset_input_buffer()
 count = 0
-letters = 'ZOQMDGJPUKFBSYNRLIEATCHXWV' # = is a neutral hand position
+amount = 50
+letters = 'Z' # = is a neutral hand position
+letters = letters * amount
 #letters = 'W'
 results = []
-
 while(count < len(letters)):
     data = ser.readline()
     print(letters[count])
@@ -27,7 +28,7 @@ while(count < len(letters)):
 
 
 print(results)
-name = "Jason"
+name = "Spencer2"
 for i,letter in enumerate(letters):
     data_path = os.path.join(os.path.dirname(__file__), 'data', '{}'.format(letter))
     if not os.path.exists(data_path):
