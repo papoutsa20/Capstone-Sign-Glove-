@@ -3,6 +3,7 @@ import numpy as np
 import os
 from sklearn.utils import shuffle
 import predict
+import time
 DATA_PATH = os.path.join(os.path.dirname(__file__), 'data')
 '''
 LETTERS = (
@@ -58,12 +59,11 @@ LETTERS = (
         'S',
         'T',
         'U',
-        '''
         'V',
         'W',
         'X',
         'Y',
-        'Z'''
+        'Z'
 )
 
 
@@ -74,7 +74,7 @@ LETTERS = (
 def read_data():
     data = []
     labels = []
-    poi = ('Jason2.csv', 'Spencer2.csv', 'Stelios2.csv')
+    poi = ('Jason2.csv', 'Stelios2.csv', 'Spencer2.csv')#, 'Spencer2.csv', 'Stelios2.csv')
     for letter in range(len(LETTERS)):
         try:
             for data_file in [x for x in os.listdir(os.path.join(DATA_PATH,LETTERS[letter])) if x in poi]:
@@ -96,7 +96,7 @@ def preprocess_data(data, maxes, mins):
 
     for i in range(8):
         data[:,i:i+1] = data[:,i:i+1] - mins[i]
-        data[:,i:i+1] = data[:,i:i+1] / maxes[i]
+        data[:,i:i+1] = data[:,i:i+1] / (maxes[i] - mins[i])
      
     '''
     data[:,:5] = data[:,:5] / max_value
@@ -190,10 +190,11 @@ if '__main__' == __name__:
     #exit()
     model = create_model()
     train_x, train_y, test_x, test_y = split_train_test(data, labels)
-
-    model.fit(train_x, train_y, epochs=1000)
+    #print(train_x.shape)
+    #print(test_x.shape)
+    model.fit(train_x, train_y, epochs=500)
 
     model.evaluate(test_x, test_y, verbose=2)
-    model.save('my_model.h5')
+    model.save('my_model{}.h5'.format(time.time()))
 
     predict.predictValues(model)
