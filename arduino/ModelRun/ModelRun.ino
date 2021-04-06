@@ -17,6 +17,11 @@ const int indexPin = A6;      //flexPin2
 const int middlePin = A5;
 const int ringPin = A4;
 const int pinkyPin = A3;
+
+//mins and maxes for normalization
+const float mins[8] = {446, 221, 284, 261, 331, -.2823486328, -1.2181396484, -.0247802734};
+const float maxs[8] = {654, 544, 585, 587, 610, 1.2548828125, 0.4637541172, 1.3212890625};
+float results[26];
 //const float VCC = 3.3;      // voltage at Ardunio 5V line
 //const float R_DIV = 47000.0;  // resistor used to create a voltage divider
 float ax, ay, az= 0;
@@ -37,7 +42,7 @@ namespace {
 
   // Create an erea of memory for input output and other Tensorflow arrays.
   // You'll need to adjust this by compiling, running, and looking for errors
-  constexpr int kTensorArenaSize = 1 * 1024;
+  constexpr int kTensorArenaSize = 2 * 1024;
   uint8_t tensor_arena[kTensorArenaSize];
 } //namespace
 
@@ -115,11 +120,9 @@ void setup() {
   Serial.print("Numbers of dimensions: ");
   Serial.println(model_input->dims->size);
   Serial.print("Dim 1 Size:");
-  Serial.println(model_input->dims->data[0];
-  Serial.print("Dim 2 Size:");
-  Serial.println(model_input->dims->data[1];
-  Serial.print("Dim 3 Size:");
-  Serial.println(model_input->dims->data[2];
+  Serial.println(model_input->dims->data[1]);
+  Serial.print("output Size:");
+  Serial.println(model_output->dims->data[1]);
   Serial.print("Input type: ");
   Serial.println(model_input->type);
 #endif  
@@ -180,24 +183,32 @@ void loop() {
   unsigned long start_timestamp = micros();
 #endif
 
-  // Copy value to input buffer
-  model_input->data.f[0] = ADCthumb;
-  model_input->data.f[1] = ADCindex;
-  model_input->data.f[2] = ADCmiddle;
-  model_input->data.f[3] = ADCring;
-  model_input->data.f[4] = ADCpinky;
-  model_input->data.f[5] = ax;
-  model_input->data.f[6] = ay;
-  model_input->data.f[7] = az;
+float inputs[8] = {ADCthumb, ADCindex, ADCmiddle, ADCring, ADCpinky, ax, ay, az};
+  //normalize values before sending to model
+  for (int i=0; i<8; i++) {
+    inputs[i] = inputs[i]-mins[i];
+    inputs[i] = inputs[i] / (maxs[i]-mins[i]);
+    model_input->data.f[i] = inputs[i];
+  }
 
+  interpreter->Invoke();
+
+  Serial.printf("%f,%f,%f,%f,%f,%f,%f,%f", inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], inputs[5], inputs[6], inputs[7]);
+  Serial.printf("\n");
+
+  
+  for(int i=0; i<26; i++){
+    results[i] = model_output->data.f[i];
+    Serial.printf("%c, %f \n", (char)(i+65), results[i]);
+  }
+ 
   TfLiteStatus invoke_status = interpreter->Invoke();
   if (invoke_status != kTfLiteOk) {
     error_reporter->Report("Invoke failed on input");
   }
 
-  float y_vals = model_output->data.f[0];
 
-  Serial.println(y_vals);
-  
+
+  Serial.println("             ");
   delay(1000);
 }
