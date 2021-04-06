@@ -8,7 +8,6 @@ ser = serial.Serial('COM4', 9600, timeout=2)
 
 #ser = serial.Serial('/dev/cu.usbmodem14201', 9600, timeout=2)
 ser.reset_input_buffer()
-count = 0
 amount = 50
 letters = 'Z' # = is a neutral hand position
 letters = letters * amount

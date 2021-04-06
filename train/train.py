@@ -121,9 +121,15 @@ def preprocess_data(data, maxes, mins):
 def create_model():
 
     model = tf.keras.Sequential([
+<<<<<<< HEAD
+        tf.keras.layers.Dense(8, activation='relu', input_shape=(8,)),
+        tf.keras.layers.Dense(10, activation='relu'),
+        tf.keras.layers.Dense(5, activation='softmax')
+=======
         tf.keras.layers.Dense(10, activation='relu', input_shape=(8,)),
         tf.keras.layers.Dense(len(LETTERS)+10, activation='relu'),
         tf.keras.layers.Dense(len(LETTERS), activation='softmax')
+>>>>>>> 8fcfc1634868eae39fc9055e79fb43a305d2ba38
     ])
 
     model.compile(optimizer='adam',
@@ -131,7 +137,7 @@ def create_model():
         metrics=['accuracy'])
     return model
 
-def split_train_test(data, labels, percent_train=.80):
+def split_train_test(data, labels, percent_train=.95):
     cut_off = int(data.shape[0]*.80)
     grades, labels = shuffle(data, labels)
     train_x = grades[:cut_off]
@@ -172,6 +178,7 @@ def find_mins(data):
 if '__main__' == __name__:
     print('reading data from {}'.format(DATA_PATH))
     data, labels = read_data() 
+    data = preprocess_data(data)
     print(data)
     maxes = find_maxes(data)
     mins = find_mins(data)

@@ -5,6 +5,17 @@ import sys
 import os
 import tensorflow as tf
 
+<<<<<<< HEAD
+model_lite_dir = os.path.join(os.path.dirname(__file__), '..', 'arduino_models')
+
+# load model from first argument in command line
+model = tf.keras.models.load_model(sys.argv[1])
+
+'''
+Note: I got below code from 
+https://www.digikey.com/en/maker/projects/intro-to-tinyml-part-1-training-a-model-for-arduino-in-tensorflow/8f1fc8c0b83d417ab521c48864d2a8ec
+'''
+
 # Function: Convert some hex value into an array for C programming
 def hex_to_c_array(hex_data, var_name):
 
