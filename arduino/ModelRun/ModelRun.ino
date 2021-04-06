@@ -9,7 +9,7 @@
 //Our model
 #include "model.h"
 
-#define DEBUG 0
+#define DEBUG 1
 
 // Change these constants according to your project's design
 const int thumbPin = A7;      // Pin connected to voltage divider output flexPin1
@@ -179,9 +179,6 @@ void loop() {
 #if DEBUG
   unsigned long start_timestamp = micros();
 #endif
-
-  
-
 
   // Copy value to input buffer
   model_input->data.f[0] = ADCthumb;
