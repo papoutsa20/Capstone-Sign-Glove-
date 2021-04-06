@@ -30,22 +30,22 @@ float initx, inity, initz = 0;
 
 namespace {
   tflite::ErrorReporter* error_reporter = nullptr;
-  const tflite::Model* model = nullptr;
+  const tflite::Model* modelpp = nullptr;
   tflite::MicroInterpreter* interpreter = nullptr;
   TfLiteTensor* model_input = nullptr;
   TfLiteTensor* model_output = nullptr;
 
   // Create an erea of memory for input output and other Tensorflow arrays.
   // You'll need to adjust this by compiling, running, and looking for errors
-  constexpr int kTensorAreaSize = 1 * 1024;
-  int8_t tensor_area[kTensorArenaSize]
+  constexpr int kTensorArenaSize = 1 * 1024;
+  uint8_t tensor_arena[kTensorArenaSize];
 } //namespace
 
 
 void setup() {
 
   #if DEBUG
-    while(!Serial)
+    while(!Serial);
   #endif
   // put your setup code here, to run once:
   delay(2000);
@@ -79,22 +79,26 @@ void setup() {
   error_reporter = &micro_error_reporter;
 
   //Map the model into a usable data structure
-  model = tflite::GetModel(model);
-  if (model->version() != TFLITE_SCHEMA_VERSION) {
+  modelpp = tflite::GetModel(model);
+  if (modelpp->version() != TFLITE_SCHEMA_VERSION) {
     error_reporter->Report("Model version no work");
     while(1);
   }
 
-  static tflite::MicroMutableOpResolver micro_mutable_op_resolver;
+  static tflite::MicroMutableOpResolver<3> micro_mutable_op_resolver; //put this number 4 b/c we found it online, may be a problem
 
-  micro_mutable_op_resolver.AddBuiltin(
-    tflite::BuiltInOperator_FULLY_CONNECTED,
-    tflite::ops::micro::Register_FULLY_CONNECTED(),
-    1, 3);
+ // micro_mutable_op_resolver.AddBuiltin(
+ //   tflite::BuiltInOperator_FULLY_CONNECTED,
+ //   tflite::ops::micro::Register_FULLY_CONNECTED(),
+ //   1, 3);
+  micro_mutable_op_resolver.AddSoftmax();
+  micro_mutable_op_resolver.AddRelu();
+  micro_mutable_op_resolver.AddFullyConnected();
+  
 
     // Build an interpreter to run the model
     static tflite::MicroInterpreter static_interpreter (
-      model, micro_mutable_op_resolver, tensor_arena, kTensorArenaSize,
+      modelpp, micro_mutable_op_resolver, tensor_arena, kTensorArenaSize,
       error_reporter);
     interpreter = &static_interpreter;
 
@@ -121,7 +125,7 @@ void setup() {
 #endif  
   }
 
-}
+
 
 void loop() {
   // put your main code here, to run repeatedly:
@@ -176,12 +180,8 @@ void loop() {
   unsigned long start_timestamp = micros();
 #endif
 
-  // Get current timestamp and modulo with period
-  unsigned long timestamp = micros();
-  timestamp = timestamp % (unsigned long)period;
+  
 
-  // Calculate x value to feed to the model
-  float x_val ((float)timestamp * 2 * pi) / period;
 
   // Copy value to input buffer
   model_input->data.f[0] = ADCthumb;
@@ -195,12 +195,12 @@ void loop() {
 
   TfLiteStatus invoke_status = interpreter->Invoke();
   if (invoke_status != kTfLiteOk) {
-    error_reporter->Report("Invoke failed on input: %f\n", x_val);
+    error_reporter->Report("Invoke failed on input");
   }
 
-  float[] y_vals = model_output->data.f;
+  float y_vals = model_output->data.f[0];
 
-  Serial.println(y_vals[0])
+  Serial.println(y_vals);
   
   delay(1000);
 }
