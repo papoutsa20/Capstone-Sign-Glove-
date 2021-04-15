@@ -5,7 +5,6 @@ import sys
 import os
 import tensorflow as tf
 
-<<<<<<< HEAD
 model_lite_dir = os.path.join(os.path.dirname(__file__), '..', 'arduino_models')
 
 # load model from first argument in command line

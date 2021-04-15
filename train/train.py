@@ -74,7 +74,7 @@ LETTERS = (
 def read_data():
     data = []
     labels = []
-    poi = ('Jason2.csv', 'Stelios2.csv', 'Spencer2.csv')#, 'Spencer2.csv', 'Stelios2.csv')
+    poi = ('Jason2.csv')#, 'Spencer2.csv', 'Stelios2.csv')
     for letter in range(len(LETTERS)):
         try:
             for data_file in [x for x in os.listdir(os.path.join(DATA_PATH,LETTERS[letter])) if x in poi]:
@@ -121,16 +121,11 @@ def preprocess_data(data, maxes, mins):
 def create_model():
 
     model = tf.keras.Sequential([
-<<<<<<< HEAD
-        tf.keras.layers.Dense(8, activation='relu', input_shape=(8,)),
-        tf.keras.layers.Dense(10, activation='relu'),
-        tf.keras.layers.Dense(5, activation='softmax')
-=======
         tf.keras.layers.Dense(10, activation='relu', input_shape=(8,)),
         tf.keras.layers.Dense(len(LETTERS)+10, activation='relu'),
         tf.keras.layers.Dense(len(LETTERS), activation='softmax')
->>>>>>> 8fcfc1634868eae39fc9055e79fb43a305d2ba38
     ])
+
 
     model.compile(optimizer='adam',
         loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
@@ -176,17 +171,19 @@ def find_mins(data):
 
 
 if '__main__' == __name__:
+    #model = load_model();
+    #predict.predictValues(model)
+    model = create_model()
     print('reading data from {}'.format(DATA_PATH))
     data, labels = read_data() 
-    data = preprocess_data(data)
     print(data)
     maxes = find_maxes(data)
     mins = find_mins(data)
 
-    print(maxes)
-    print(mins)
+    for i in range(8):
+        print(maxes[i])
+        print(mins[i])
 
-    #exit()
 
     print(labels)
     #exit()
@@ -199,9 +196,9 @@ if '__main__' == __name__:
     train_x, train_y, test_x, test_y = split_train_test(data, labels)
     #print(train_x.shape)
     #print(test_x.shape)
-    model.fit(train_x, train_y, epochs=500)
+    model.fit(train_x, train_y, epochs=1000)
 
     model.evaluate(test_x, test_y, verbose=2)
-    model.save('my_model{}.h5'.format(time.time()))
+    model.save('jason_model{}.h5'.format(time.time()))
 
     predict.predictValues(model)
