@@ -42,7 +42,7 @@ namespace {
 
   // Create an erea of memory for input output and other Tensorflow arrays.
   // You'll need to adjust this by compiling, running, and looking for errors
-  constexpr int kTensorArenaSize = 2 * 1024;
+  constexpr int kTensorArenaSize = 2  * 1024;
   uint8_t tensor_arena[kTensorArenaSize];
 } //namespace
 
