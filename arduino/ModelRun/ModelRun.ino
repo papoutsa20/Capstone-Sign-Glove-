@@ -7,7 +7,7 @@
 #include "tensorflow/lite/version.h"
 
 //Our model
-#include "model.h"
+#include "three_model.h"
 
 #define DEBUG 1
 
