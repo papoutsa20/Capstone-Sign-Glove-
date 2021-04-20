@@ -74,7 +74,7 @@ LETTERS = (
 def read_data():
     data = []
     labels = []
-    poi = ('Jason3.csv', 'Spencer2.csv', 'Stelios2.csv')#, 'Spencer2.csv', 'Stelios2.csv')
+    poi = ('Jason4.csv')#, 'Spencer2.csv', 'Stelios2.csv')#, 'Spencer2.csv', 'Stelios2.csv')
     for letter in range(len(LETTERS)):
         try:
             for data_file in [x for x in os.listdir(os.path.join(DATA_PATH,LETTERS[letter])) if x in poi]:
@@ -196,7 +196,7 @@ if '__main__' == __name__:
     train_x, train_y, test_x, test_y = split_train_test(data, labels)
     #print(train_x.shape)
     #print(test_x.shape)
-    model.fit(train_x, train_y, epochs=500)
+    model.fit(train_x, train_y, epochs=250)
 
     model.evaluate(test_x, test_y, verbose=2)
     #model.save('jason_model{}.h5'.format(time.time()))
