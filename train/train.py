@@ -186,7 +186,7 @@ if '__main__' == __name__:
 
 
     print(labels)
-    #exit()
+    exit()
     data = preprocess_data(data, maxes, mins)
     #print(data)
     print(data.shape)

@@ -19,8 +19,8 @@ const int ringPin = A4;
 const int pinkyPin = A3;
 
 //mins and maxes for normalization
-const float mins[8] = {446, 221, 284, 261, 331, -.2823486328, -1.2181396484, -.0247802734};
-const float maxs[8] = {654, 544, 585, 587, 610, 1.2548828125, 0.4637541172, 1.3212890625};
+const float mins[8] = {379, 135, 218, 191, 345, -0.4046630859, -1.115234375, -0.0272216797};
+const float maxs[8] = {647, 397, 469, 475, 601, 0.9512939453, 0.6702880859, 1.0958251953};
 float results[26];
 //const float VCC = 3.3;      // voltage at Ardunio 5V line
 //const float R_DIV = 47000.0;  // resistor used to create a voltage divider
@@ -186,7 +186,7 @@ void loop() {
 float inputs[8] = {ADCthumb, ADCindex, ADCmiddle, ADCring, ADCpinky, ax, ay, az};
   //normalize values before sending to model
   for (int i=0; i<8; i++) {
-    inputs[i] = inputs[i]-mins[i];
+    inputs[i] = inputs[i] - mins[i];
     inputs[i] = inputs[i] / (maxs[i]-mins[i]);
     model_input->data.f[i] = inputs[i];
   }
@@ -196,10 +196,22 @@ float inputs[8] = {ADCthumb, ADCindex, ADCmiddle, ADCring, ADCpinky, ax, ay, az}
   Serial.printf("%f,%f,%f,%f,%f,%f,%f,%f", inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], inputs[5], inputs[6], inputs[7]);
   Serial.printf("\n");
 
+  int max_p = 0;
+  float max_i = 0;
   
   for(int i=0; i<26; i++){
     results[i] = model_output->data.f[i];
-    Serial.printf("%c, %f \n", (char)(i+65), results[i]);
+    //Serial.printf("%c, %f \n", (char)(i+65), results[i]);
+    if (results[i] > max_p) {
+      max_p = results[i];
+      max_i = i;
+    }
+  }
+
+  float threshold_max = 0.95;
+
+  if (max_p > threshhold_max) {
+    Serial.printf("%c", (char)(max_i+65));
   }
  
   TfLiteStatus invoke_status = interpreter->Invoke();
@@ -210,5 +222,5 @@ float inputs[8] = {ADCthumb, ADCindex, ADCmiddle, ADCring, ADCpinky, ax, ay, az}
 
 
   Serial.println("             ");
-  delay(1000);
+  delay(500);
 }
