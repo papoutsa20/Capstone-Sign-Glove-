@@ -175,8 +175,8 @@ void loop() {
     Serial.println(" ");
   }
   else {
-    Serial.printf("%d,%d,%d,%d,%d,%.10f,%.10f,%.10f", ADCthumb, ADCindex, ADCmiddle, ADCring, ADCpinky, ax, ay, az);
-    Serial.printf("\n");
+    //Serial.printf("%d,%d,%d,%d,%d,%.10f,%.10f,%.10f", ADCthumb, ADCindex, ADCmiddle, ADCring, ADCpinky, ax, ay, az);
+    //Serial.printf("\n");
   }
 
 #if DEBUG
@@ -193,11 +193,11 @@ float inputs[8] = {ADCthumb, ADCindex, ADCmiddle, ADCring, ADCpinky, ax, ay, az}
 
   interpreter->Invoke();
 
-  Serial.printf("%f,%f,%f,%f,%f,%f,%f,%f", inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], inputs[5], inputs[6], inputs[7]);
-  Serial.printf("\n");
+  //Serial.printf("%f,%f,%f,%f,%f,%f,%f,%f", inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], inputs[5], inputs[6], inputs[7]);
+  //Serial.printf("\n");
 
-  int max_p = 0;
-  float max_i = 0;
+  float max_p = 0;
+  int max_i = 0;
   
   for(int i=0; i<26; i++){
     results[i] = model_output->data.f[i];
@@ -208,9 +208,9 @@ float inputs[8] = {ADCthumb, ADCindex, ADCmiddle, ADCring, ADCpinky, ax, ay, az}
     }
   }
 
-  float threshold_max = 0.95;
+  float threshold_max = 0.90;
 
-  if (max_p > threshhold_max) {
+  if (max_p > threshold_max) {
     Serial.printf("%c", (char)(max_i+65));
   }
  
